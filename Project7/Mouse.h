@@ -7,6 +7,7 @@ public:
 
 	int getRow() {return row;}
 	int getCol() {return col;}
+	int getIco() {return icon;}
 	System::Drawing::Icon^ Mouse::getIcon();
 
 	void setRow(int newRow) {row = newRow;}

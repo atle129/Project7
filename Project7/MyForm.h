@@ -169,6 +169,27 @@ namespace Project7 {
 					 }
 			 }
 
+		private: bool getEdge()
+				 {
+					 if (myMouse->getIco() == 0)
+					 {
+						if (myMouse->getCol() < NUMCOLS -1) return false;
+					 }
+					 else if (myMouse->getIco() == 1)
+					 {
+						if (myMouse->getCol() > 0) return false;
+					 }
+					 else if (myMouse->getIco() == 3)
+					 {
+						if (myMouse->getRow() < NUMROWS -1) return false;
+					 }
+					 else if (myMouse->getIco() == 2)
+					 {
+						if (myMouse->getRow() >  0) return false;
+					 }
+					 return true;
+				 }
+
 
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
 
@@ -194,7 +215,7 @@ namespace Project7 {
 				 int mouseRow = 8;
 				 int mouseCol = 0;
 
-				 int cheeseRow = 11;
+				 int cheeseRow = 8;
 				 int cheeseCol = 8;
 
 				 direction = 'r';
@@ -237,6 +258,10 @@ private: System::Void turnLeft_Click(System::Object^  sender, System::EventArgs^
 private: System::Void move_Click(System::Object^  sender, System::EventArgs^  e) {
 			 int x, y;
 			 int mouseRow, mouseCol;
+			 bool edge;
+			 edge = getEdge();
+			 if (edge == false)
+			 {
 			 mouseRow = myMouse->getRow();
 			 mouseCol = myMouse->getCol();
 			 x = mouseCol * CELLSIZE;
@@ -254,7 +279,8 @@ private: System::Void move_Click(System::Object^  sender, System::EventArgs^  e)
 			 y = mouseRow * CELLSIZE;
 			 Rectangle mouseRect = Rectangle(x,y,CELLSIZE,CELLSIZE);
 			 g->DrawIcon (myMouse->getIcon(),mouseRect);
-			 
+			 }
+			 else if (edge == true) MessageBox::Show("Edge");
 		 }
 };
 }
