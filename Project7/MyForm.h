@@ -2,7 +2,15 @@
 
 #include "Mouse.h"
 #include "Cell.h"
+#include <fstream>
+#include <vector>
+#include <string>
+#include <iterator>
 #include <array>
+#include<sstream>
+#include<cstring>
+
+
 
 namespace Project7 {
 
@@ -147,19 +155,21 @@ namespace Project7 {
 	Brush^ burlyBrush;
 	Pen^ blackPen;
 
+	
+
 	static const int NUMROWS = 16;
 	static const int NUMCOLS = 20;
 	static const int CELLSIZE = 25;
 	
-	private: void drawMaze()
+	private: void drawMaze(int worldRow, int worldCol)
 			 {
 				 int row, col;
 				 int x, y;
 
 				 panel1->Refresh();
 
-				 for (row = 0; row < NUMROWS; row++)
-					 for (col = 0; col < NUMCOLS; col++)
+				 for (row = 0; row < worldRow; row++)
+					 for (col = 0; col < worldCol; col++)
 					 {
 						 x = col * CELLSIZE;
 						 y = row * CELLSIZE;
@@ -169,11 +179,11 @@ namespace Project7 {
 					 }
 			 }
 
-		private: bool getEdge()
+		private: bool getEdge(int worldRow, int worldCol)
 				 {
 					 if (myMouse->getIco() == 0)
 					 {
-						if (myMouse->getCol() < NUMCOLS -1) return false;
+						if (myMouse->getCol() < worldCol -1) return false;
 					 }
 					 else if (myMouse->getIco() == 1)
 					 {
@@ -181,7 +191,7 @@ namespace Project7 {
 					 }
 					 else if (myMouse->getIco() == 3)
 					 {
-						if (myMouse->getRow() < NUMROWS -1) return false;
+						if (myMouse->getRow() < worldRow -1) return false;
 					 }
 					 else if (myMouse->getIco() == 2)
 					 {
@@ -190,10 +200,67 @@ namespace Project7 {
 					 return true;
 				 }
 
+		private:  int conversion_to_int(std::string info)
+				{
+					int value;
+					std::stringstream convert(info);
+			
+			
+					if (!(convert >> value))
+					{
+					value = 0;
+					}
+					return value;
+				}
+
+		private: void moveMouse()
+				 {
+					 
+				 }
+
+		private: void mouseLeft()
+				 {
+					 int x, y;
+					 int mouseRow, mouseCol;
+					 mouseRow = myMouse->getRow();
+					 mouseCol = myMouse->getCol();
+					 myMouse->setRow(mouseRow);
+					 myMouse->setCol(mouseCol);
+					 x = mouseCol * CELLSIZE;
+					 y = mouseRow * CELLSIZE;
+					 Rectangle mouseRect = Rectangle(x,y,CELLSIZE,CELLSIZE);
+					 myMouse->turnLeft();
+					 g->DrawIcon (myMouse->getIcon(),mouseRect);
+				 }
+
+
 
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
 
+
 				 int row, col;
+
+				 std::array <int,2> world;
+
+				 std::string temp;
+
+				 std::ifstream inputWorld("input world.txt");
+
+				 while (!inputWorld.eof())
+				{
+
+					inputWorld >> temp;
+
+					if (temp == "World")
+					{
+						inputWorld >> temp;
+						world[0] = conversion_to_int(temp);
+						inputWorld >> temp;
+						world[1] = conversion_to_int(temp);
+				
+					}
+				 }
+
 
 				 g = panel1->CreateGraphics();
 				 grayBrush = gcnew System::Drawing::SolidBrush(Color::Gray);
@@ -201,28 +268,88 @@ namespace Project7 {
 				 whiteBrush = gcnew System::Drawing::SolidBrush(Color::White);
 				 burlyBrush = gcnew System::Drawing::SolidBrush(Color::BurlyWood);
 
-				 maze = gcnew array<Cell^, 2>(NUMROWS,NUMCOLS);
-				 for (row = 0; row < NUMROWS; row++)
-					 for (col = 0; col < NUMCOLS; col++)
+				 maze = gcnew array<Cell^, 2>(world[0],world[1]);
+				 for (row = 0; row < world[0]; row++)
+					 for (col = 0; col < world[1]; col++)
 						 maze[row,col] = gcnew Cell(row,col,true);
+
+
 			 }
 	private: System::Void btnStart_Click(System::Object^  sender, System::EventArgs^  e) {
 
 				 int x, y;
+
+				 std::array <int,2> world;
+				 std::array <int,4> robot;
+				 std::vector <int> wall;
+				 std::vector <int> beeper;
+
+				 std::vector<int>::iterator walls;
+				 std::vector<int>::iterator beepers;
+
+				 std::string temp;
+
+				 std::ifstream inputWorld("input world.txt");
+
+				 while (!inputWorld.eof())
+				 {
+
+					 inputWorld >> temp;
+
+					 if (temp == "World")
+					 {
+						 inputWorld >> temp;
+						 world[0] = conversion_to_int(temp);
+						 inputWorld >> temp;
+						 world[1] = conversion_to_int(temp);
+				
+					 }
+					 else if (temp == "Robot")
+					 {
+						 inputWorld >> temp;
+						 robot[0] = conversion_to_int(temp);
+						 inputWorld >> temp;
+						 robot[1] = conversion_to_int(temp);
+						 inputWorld >> temp;
+						 robot[2] = conversion_to_int(temp);
+						 inputWorld >> temp;
+						 robot[3] = conversion_to_int(temp);
+					 }
+					 else  if (temp == "Wall")
+					 {
+						 for (int i = 0; i < 2; i++)
+						 {
+							 int tempWall;
+							 inputWorld >> temp;
+							 tempWall = conversion_to_int(temp);
+							 wall.push_back(tempWall);
+						 }
+					 }
+					 else if (temp == "Beepers")
+					 {
+						 for (int i = 0; i < 3; i++)
+						 {
+							 int tempBeeper;
+							 inputWorld >> temp;
+							 tempBeeper = conversion_to_int(temp);
+							 beeper.push_back(tempBeeper);
+						 }
+					 }
+				 }
 				 Drawing::Icon ^ cheese = gcnew
 			  System::Drawing::Icon("cheese.ico");
 
-				 int mouseRow = 8;
-				 int mouseCol = 0;
+				 int mouseRow = robot[0];
+				 int mouseCol = robot[1];
 
-				 int cheeseRow = 8;
-				 int cheeseCol = 8;
+				 int cheeseRow = beeper[0];
+				 int cheeseCol = beeper[1];
 
 				 direction = 'r';
 
 				 myMouse = gcnew Mouse(mouseRow, mouseCol);
 
-				 drawMaze();
+				 drawMaze(world[0], world[1]);
 
 				 x = cheeseCol * CELLSIZE;
 				 y = cheeseRow * CELLSIZE;
@@ -242,45 +369,57 @@ namespace Project7 {
 private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e) {
 		 }
 private: System::Void turnLeft_Click(System::Object^  sender, System::EventArgs^  e) {
-			 int x, y;
-			 int mouseRow, mouseCol;
-			 mouseRow = myMouse->getRow();
-			 mouseCol = myMouse->getCol();
-			 myMouse->setRow(mouseRow);
-		     myMouse->setCol(mouseCol);
-			 x = mouseCol * CELLSIZE;
-			 y = mouseRow * CELLSIZE;
-			 Rectangle mouseRect = Rectangle(x,y,CELLSIZE,CELLSIZE);
-			 myMouse->turnLeft();
-			 g->DrawIcon (myMouse->getIcon(),mouseRect);
 			 
+			 mouseLeft();
 		 }
 private: System::Void move_Click(System::Object^  sender, System::EventArgs^  e) {
-			 int x, y;
-			 int mouseRow, mouseCol;
-			 bool edge;
-			 edge = getEdge();
-			 if (edge == false)
-			 {
-			 mouseRow = myMouse->getRow();
-			 mouseCol = myMouse->getCol();
-			 x = mouseCol * CELLSIZE;
-			 y = mouseRow * CELLSIZE;
-			 Rectangle oldRect = Rectangle(x,y,CELLSIZE,CELLSIZE);
-			 g->FillRectangle(burlyBrush, oldRect);
-			 g->DrawRectangle(blackPen, oldRect);
+			 
+					 int x, y;
+					 int mouseRow, mouseCol;
+					 bool edge;
 
-			 myMouse->move();
-			 mouseRow = myMouse->getRow();
-			 mouseCol = myMouse->getCol();
-			 myMouse->setRow(mouseRow);
-		     myMouse->setCol(mouseCol);
-			 x = mouseCol * CELLSIZE;
-			 y = mouseRow * CELLSIZE;
-			 Rectangle mouseRect = Rectangle(x,y,CELLSIZE,CELLSIZE);
-			 g->DrawIcon (myMouse->getIcon(),mouseRect);
-			 }
-			 else if (edge == true) MessageBox::Show("Edge");
+					 std::array <int,2> world;
+
+					 std::string temp;
+
+					 std::ifstream inputWorld("input world.txt");
+
+					 while (!inputWorld.eof())
+					 {
+
+						 inputWorld >> temp;
+
+						 if (temp == "World")
+						 {
+							 inputWorld >> temp;
+							 world[0] = conversion_to_int(temp);
+							 inputWorld >> temp;
+							 world[1] = conversion_to_int(temp);
+				
+						 }
+					 }
+					 edge = getEdge(world[0], world[1]);
+					 if (edge == false)
+					 {
+					 mouseRow = myMouse->getRow();
+					 mouseCol = myMouse->getCol();
+					 x = mouseCol * CELLSIZE;
+					 y = mouseRow * CELLSIZE;
+					 Rectangle oldRect = Rectangle(x,y,CELLSIZE,CELLSIZE);
+					 g->FillRectangle(burlyBrush, oldRect);
+					 g->DrawRectangle(blackPen, oldRect);
+
+					 myMouse->move();
+					 mouseRow = myMouse->getRow();
+					 mouseCol = myMouse->getCol();
+					 myMouse->setRow(mouseRow);
+				     myMouse->setCol(mouseCol);
+					 x = mouseCol * CELLSIZE;
+					 y = mouseRow * CELLSIZE;
+					 Rectangle mouseRect = Rectangle(x,y,CELLSIZE,CELLSIZE);
+					 g->DrawIcon (myMouse->getIcon(),mouseRect);
+					 }
+					 else if (edge == true) MessageBox::Show("Edge");
 		 }
 };
 }
