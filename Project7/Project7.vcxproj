@@ -15,7 +15,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>Project7</RootNamespace>
-    <ProjectName>Mouse</ProjectName>
+    <ProjectName>Karel</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -80,12 +80,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cell.cpp" />
-    <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Karel.cpp" />
     <ClCompile Include="MyForm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cell.h" />
-    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Karel.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
@@ -96,11 +96,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\cheese.ico" />
-    <Image Include="..\mouseDown.ico" />
-    <Image Include="..\mouseLeft.ico" />
-    <Image Include="..\mouseRight.ico" />
-    <Image Include="..\mouseUp.ico" />
+    <Image Include="beeper.ico" />
+    <Image Include="robotDown.ico" />
+    <Image Include="robotLeft.ico" />
+    <Image Include="robotRight.ico" />
+    <Image Include="robotUp.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

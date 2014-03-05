@@ -1,6 +1,6 @@
-World 7 7
+World 8 10
 Beepers 3 3 1
-Robot 4 2 1 0
+Robot 4 2 1 4
 Wall 6 7
 Wall 7 7
 Wall 6 6
@@ -9,3 +9,7 @@ Wall 6 5
 Wall 7 5
 Wall 6 4
 Wall 7 4
+Wall 1 2
+Wall 2 2
+Wall 3 2
+Beepers 6 2 1

@@ -1,11 +1,11 @@
-#include "Mouse.h"
+#include "Karel.h"
 
 
-Mouse::Mouse(void)
+Karel::Karel(void)
 {
 }
 
-Mouse::Mouse(int newRow, int newCol)
+Karel::Karel(int newRow, int newCol)
 {
 	row = 0;
 	col = 0;
@@ -15,19 +15,19 @@ Mouse::Mouse(int newRow, int newCol)
 	if (newCol >= 0) col = newCol;
 }
 
-System::Drawing::Icon^ Mouse::getIcon()
+System::Drawing::Icon^ Karel::getIcon()
 {
 	if (icon == 0)
-		return mouseRight;
+		return karelRight;
 	else if (icon == 1)
-		return mouseLeft;
+		return karelLeft;
 	else if (icon == 2)
-		return mouseUp;
+		return karelUp;
 	else
-		return mouseDown;
+		return karelDown;
 }
 
-void Mouse::turnLeft()
+void Karel::turnLeft()
 {
 	if (icon == 0)
 		icon = 2;
@@ -39,7 +39,7 @@ void Mouse::turnLeft()
 		icon = 0;
 }
 
-void Mouse::move()
+void Karel::move()
 {
 	if (icon == 0)
 		goRight();
